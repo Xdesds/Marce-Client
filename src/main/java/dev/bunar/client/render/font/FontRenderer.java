@@ -27,8 +27,35 @@ public final class FontRenderer implements AutoCloseable {
         nvgBeginFrame(vg, width, height, pixelRatio); nvgFontFace(vg, "inter"); nvgTextAlign(vg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
     }
     public void text(String text, float x, float y, float size, int argb) {
-        color.r(((argb >> 16) & 255) / 255f).g(((argb >> 8) & 255) / 255f).b((argb & 255) / 255f).a((argb >>> 24) / 255f);
+        setColor(argb);
         nvgFillColor(vg, color); nvgFontSize(vg, size); nvgText(vg, x, y, text);
+    }
+    public void pushTransform(float x, float y, float scale) {
+        nvgSave(vg);
+        nvgTranslate(vg, x, y);
+        nvgScale(vg, scale, scale);
+    }
+    public void popTransform() { nvgRestore(vg); }
+    public void roundedRect(float x, float y, float width, float height, float radius, int argb) {
+        setColor(argb);
+        nvgBeginPath(vg);
+        nvgRoundedRect(vg, x, y, width, height, radius);
+        nvgFillColor(vg, color);
+        nvgFill(vg);
+    }
+    public void line(float x1, float y1, float x2, float y2, float width, int argb) {
+        setColor(argb);
+        nvgBeginPath(vg);
+        nvgMoveTo(vg, x1, y1);
+        nvgLineTo(vg, x2, y2);
+        nvgStrokeWidth(vg, width);
+        nvgLineCap(vg, NVG_ROUND);
+        nvgStrokeColor(vg, color);
+        nvgStroke(vg);
+    }
+    private void setColor(int argb) {
+        color.r(((argb >> 16) & 255) / 255f).g(((argb >> 8) & 255) / 255f)
+                .b((argb & 255) / 255f).a((argb >>> 24) / 255f);
     }
     public void end() { nvgEndFrame(vg); }
     @Override public void close() { nvgDelete(vg); color.free(); memFree(fontData); }

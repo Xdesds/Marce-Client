@@ -3,6 +3,7 @@ package dev.bunar.client;
 import dev.bunar.client.render.RenderPreparation;
 import dev.bunar.client.render.blur.BlurKernel;
 import dev.bunar.client.ui.PanelLayout;
+import dev.bunar.client.ui.Category;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,9 +20,11 @@ class CoreTest {
     }
     @Test void categoryHitTestsFollowWindowScaling() {
         for(int[] size:new int[][]{{1920,1080},{640,480},{320,240},{80,60}}) {
-            var p=PanelLayout.forWindow(size[0],size[1]);
-            for(int i=0;i<4;i++) assertEquals(i,p.categoryAt(p.x()+30*p.scale(),p.y()+(110+i*42)*p.scale()));
-            assertEquals(-1,p.categoryAt(p.x()+150*p.scale(),p.y()+110*p.scale()));
+            var p=PanelLayout.forWindow(size[0],size[1],100);
+            for (Category category : Category.values()) {
+                assertEquals(category,p.categoryAt(p.x()+28*p.scale(),p.y()+(88+category.ordinal()*48)*p.scale()));
+            }
+            assertNull(p.categoryAt(p.x()+150*p.scale(),p.y()+110*p.scale()));
             assertTrue(p.x()>=0 && p.y()>=0);
         }
     }

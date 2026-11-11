@@ -80,9 +80,11 @@ class GpuTest {
                 }
                 data.flip(); glBindTexture(GL_TEXTURE_2D,texture); glTexSubImage2D(GL_TEXTURE_2D,0,0,0,1280,960,GL_RGBA,GL_UNSIGNED_BYTE,data);
                 blur.render(texture,0,1280,960,BlurKernel.gaussian(3));
-                var painter=new ClickGuiPainter(); var layout=PanelLayout.forWindow(640,480);
-                batch.begin(640,480); painter.rectangles(batch,layout,0,-1,640,480); batch.flush();
-                fonts.begin(640,480,2); painter.text(fonts,layout,0); fonts.end();
+                var painter=new ClickGuiPainter(); var layout=PanelLayout.forWindow(640,480,100);
+                batch.begin(640,480); batch.rect(0,0,640,480,0x73090810); batch.flush();
+                fonts.begin(640,480,2);
+                painter.draw(fonts,layout,Category.VISUAL,GuiSettings.DEFAULT,180,220);
+                fonts.end();
                 saveScreenshot(reports.resolve("clickgui-preview.png"));
             } finally { memFree(data); glDeleteTextures(texture); }
             assertEquals(GL_NO_ERROR,glGetError(),"No OpenGL errors after renderer and font operations");

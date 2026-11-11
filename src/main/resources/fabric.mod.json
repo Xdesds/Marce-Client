@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bunar",
   "version": "${version}",
-  "name": "Bunar Client",
+  "name": "Marce Client",
   "description": "An independent open-source client UI and rendering foundation.",
   "environment": "client",
   "license": "MIT",

@@ -8,6 +8,7 @@ import dev.bunar.client.render.blur.SeparableBlur;
 import dev.bunar.client.render.font.FontRenderer;
 import dev.bunar.client.render.gl.GlState;
 import dev.bunar.client.ui.ClickGuiPainter;
+import dev.bunar.client.ui.GuiSettings.Option;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,14 +36,20 @@ public final class BunarGuiRenderer extends PictureInPictureRenderer<BunarRender
             int fbo = output.getFbo(device.directStateAccess(), depthTexture);
             glBindFramebuffer(GL_FRAMEBUFFER, fbo); glViewport(0, 0, w, h);
             if (rectangles == null) { rectangles = new RectBatch(); blur = new SeparableBlur(); fonts = new FontRenderer(); }
-            var kernel = BunarClient.preparation().kernelIfReady();
-            var mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTexture();
-            if (kernel != null && mainColor instanceof GlTexture source && source != output) blur.render(source.glId(), fbo, w, h, kernel);
+            if (state.settings().enabled(Option.BLUR)) {
+                var kernel = BunarClient.preparation().kernelIfReady();
+                var mainColor = Minecraft.getInstance().getMainRenderTarget().getColorTexture();
+                if (kernel != null && mainColor instanceof GlTexture source && source != output)
+                    blur.render(source.glId(), fbo, w, h, kernel);
+            }
             rectangles.begin(state.width(), state.height());
-            painter.rectangles(rectangles, state.layout(), state.selected(), state.hovered(), state.width(), state.height());
+            int dimAlpha = Math.round(255 * state.settings().get(Option.DIM) / 100f);
+            rectangles.rect(0, 0, state.width(), state.height(), (dimAlpha << 24) | 0x090810);
             rectangles.flush();
             fonts.begin(state.width(), state.height(), (float) w / state.width());
-            try { painter.text(fonts, state.layout(), state.selected()); } finally { fonts.end(); }
+            try {
+                painter.draw(fonts, state.layout(), state.category(), state.settings(), state.mouseX(), state.mouseY());
+            } finally { fonts.end(); }
         }
     }
     @Override public void close() {
