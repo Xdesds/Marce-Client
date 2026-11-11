@@ -1,0 +1,31 @@
+plugins { id 'fabric-loom' version '1.15.5' }
+version = project.mod_version
+group = 'dev.bunar'
+base { archivesName = 'bunar-client' }
+repositories { mavenCentral() }
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    include implementation('org.lwjgl:lwjgl-nanovg:3.3.3')
+    ['windows', 'windows-arm64', 'linux', 'linux-arm64', 'macos', 'macos-arm64'].each { os ->
+        include runtimeOnly("org.lwjgl:lwjgl-nanovg:3.3.3:natives-${os}")
+    }
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+java { toolchain.languageVersion = JavaLanguageVersion.of(21); withSourcesJar() }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.release = 21 }
+processResources { inputs.property 'version', project.version; filesMatching('fabric.mod.json') { expand version: project.version } }
+test { useJUnitPlatform(); testLogging { events 'passed', 'failed', 'skipped'; showStandardStreams = true } }
+tasks.register('gpuTest', Test) {
+    description = 'Runs real OpenGL correctness checks and timing on a hidden GLFW window.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'gpu' }
+    testLogging { events 'passed', 'failed', 'skipped'; showStandardStreams = true }
+}
+test { useJUnitPlatform { excludeTags 'gpu' } }
+jar { from('LICENSE'); from('THIRD_PARTY_NOTICES.txt'); from('licenses') { into 'META-INF/licenses' } }

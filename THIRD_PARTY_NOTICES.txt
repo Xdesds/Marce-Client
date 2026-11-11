@@ -1,0 +1,23 @@
+Bunar Client is an independent project and is not affiliated with Lunar Client,
+Mojang, Microsoft or the authors of the dependencies below.
+
+PIP integration approach adapted to Java from Noamm9/NVGRenderer:
+https://github.com/Noamm9/NVGRenderer
+Commit: f4e8272a83964a3760e6d8a739c70e8274cc14b7
+Files of interest: nvg/NVGPIP.kt and Nvgrenderer.kt.
+Unlicense, with derived Odin BSD-3-Clause notices: licenses/NVGRenderer.txt.
+Our bridge removes timed frame caching, uses immutable render snapshots,
+and adds GL state guarding and resource cleanup. No upstream images/fonts copied.
+
+Inter font: https://github.com/google/fonts/tree/main/ofl/inter
+SIL Open Font License 1.1: licenses/Inter-OFL.txt.
+Inter-Regular.ttf is the upstream variable Inter font at default coordinates.
+
+NanoVG via LWJGL 3.3.3: https://github.com/LWJGL/lwjgl3
+NanoVG: https://github.com/memononen/nanovg (zlib license).
+LWJGL: BSD-3-Clause; native libraries bundled as nested dependencies.
+See licenses/LWJGL.txt and licenses/NanoVG.txt.
+
+Minecraft and Fabric API are build/runtime dependencies and are not relicensed
+by this project's MIT license. Minecraft itself is not distributed in this mod.
+The original Bunar icons and shaders are covered by the project MIT license.

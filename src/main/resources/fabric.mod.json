@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "bunar",
+  "version": "${version}",
+  "name": "Bunar Client",
+  "description": "An independent open-source client UI and rendering foundation.",
+  "environment": "client",
+  "license": "MIT",
+  "icon": "assets/bunar/icon.png",
+  "entrypoints": { "client": ["dev.bunar.client.BunarClient"] },
+  "depends": { "fabricloader": ">=0.18.4", "minecraft": "1.21.11", "java": ">=21", "fabric-api": "*" }
+}
